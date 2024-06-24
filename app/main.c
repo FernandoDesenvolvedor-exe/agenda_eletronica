@@ -24,7 +24,7 @@ int main(void){
         {
         case 1:
             Contato contato;
-            contato.id = proximoid();
+            contato.id = proximoidlivre();
 
             printf("Digite o nome do contato: ");
             getc(stdin);
@@ -33,24 +33,33 @@ int main(void){
             fflush(stdin);
 
             printf("Digite o numero do contato no formato (99)99999-9999: ");
-            getc(stdin);
             fgets(contato.telefone,25,stdin);
             contato.nome[strcspn(contato.telefone,"\n")] = 0;
 
+            cadastro(contato);
             break;        
         case 2:
+            int idc;
+
+            printf("Digite um ID (0 - Mostrar todos os contatos): ")
+            scanf("%i". &idc);
+            fflush(stdin);
+
+            system("clear");
+
             printf("ID\t       NOME\t      TELEFONE\t\n");
-            consultacontato();
+            consultacontato(idc);
 
             printf("\n\nDigite qualquer numero e aperte ENTER para voltar ao menu: ");
-            scanf("%i", &opcao);
+            scanf("%i", &opcao);            
             fflush(stdin);
+            opcao = 0;
 
             break;
         case 3: 
             int id;
             printf("Digite o ID do contato que deseja excluir");
-            scanf("%i", id);
+            scanf("%i", &id);
             fflush(stdin);
 
             excluicontato(id);

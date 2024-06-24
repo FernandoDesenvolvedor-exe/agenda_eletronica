@@ -7,12 +7,13 @@ typedef struct {
     char telefone[25];
 } Contato;
 
-int proximoid();
+int proximoidlivre();
 void cadastro(Contato contato);
-void consultacontato();
+void consultacontato(int id);
 void excluicontato(int id);
 
 void excluicontato(int id){
+    char encontrado = 'N';
     char arquivo[] = "database/contatos.bin";
     Contato contato;
     Contato contatos[100];
@@ -49,13 +50,21 @@ void excluicontato(int id){
                 fwrite(&contatos[0], sizeof(Contato), 1, file_update);
             }
             fclose(file_update);
+
+            encontrado = 'S';
         }
+    }
+
+    if(econtrado == 'N'){
+        printf("Contato com id %i nao encontrado!",id);
+    } else {
+        printf("Contato com id %i excluido com sucesso!",id);
     }
 }
 
-int proximoid(){
+int proximoidlivre(){
     Contato contato; 
-    int id;
+    int id = 0, cont = 1, idr = 0;
 
     FILE *file_bin;
     file_bin = fopen("database/contatos.bin", "rb");
@@ -66,17 +75,28 @@ int proximoid(){
     }
 
     while(fread(&contatos[0], sizeof(Contato), 1, file_bin) == 1){
+        if(cont != contato.id){
+            idr = cont;
+        }
+
         id = Contato.id;
-    }
+        cont++;
+    }    
     fclose(file_bin);
 
-    id++;
+    if(idr != 0){
+        id = idr;
+    } else {
+        id++;
+    }
 
     return id;
 }
 
-void consultacontato(){
+void consultacontato(int id){
     Contato contato;
+    Contato contatos[100];
+    int num_contatos = 0;
 
     FILE *file_bin;
     file_bin = fopen("database/contatos.bin", "rb");
@@ -86,11 +106,29 @@ void consultacontato(){
         exit(1);
     }
 
-    while(fread(&contatos[0], sizeof(Contato), 1, file_bin) == 1){
-        printf("%i\t", contato.id);    
-        printf("%s\t", contato.nome);    
-        printf("%s\t", contato.telefone);    
+    if(id != 0){
+        char sucesso = 'N';
+
+        while(fread(&contatos[0], sizeof(Contato), 1, file_bin) == 1){
+            if(contato.id == id){
+                sucesso = 'S';
+                printf("%i\t", contato.id);    
+                printf("%s\t", contato.nome);    
+                printf("%s\t\n", contato.telefone);    
+            }            
+        }
+
+        if(sucesso == 'N'){
+            printf("Usuario nao encontrado");
+        }
+    } else {
+        while(fread(&contatos[0], sizeof(Contato), 1, file_bin) == 1){
+            printf("%i\t", contato.id);    
+            printf("%s\t", contato.nome);    
+            printf("%s\t\n", contato.telefone);    
+        }
     }
+    
     fclose(file_bin);
 }
 
@@ -103,7 +141,7 @@ void cadastro(Contato contato){
         exit(1);
     }
 
-    fwrite(&contatos[0], sizeof(Contato), 1, file_bin);
+    fwrite(&contato, sizeof(Contato), 1, file_bin);
     fclose(file_bin);    
 }
 
